@@ -1,0 +1,9 @@
+.container{
+    display: flex;
+}
+
+.label{
+    display: flex;
+    text-align: start;
+    color: #c2c6ca;
+}
