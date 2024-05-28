@@ -1,0 +1,24 @@
+.gridcontainer {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Three columns with equal width */
+    grid-gap: 20px; /* Gap between grid items */
+    justify-content: center;
+  }
+
+  .container{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+
+  @media (max-width: 768px) {
+    .grid-container {
+      grid-template-columns: repeat(2, 1fr); /* Two columns for medium screens */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .grid-container {
+      grid-template-columns: 1fr; /* Single column for small screens */
+    }
+  }

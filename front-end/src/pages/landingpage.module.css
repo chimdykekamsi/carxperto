@@ -1,0 +1,7 @@
+.header {
+    background-image: url('../../public/Images/hero\ \(1\).png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    object-position: bottom;
+}
