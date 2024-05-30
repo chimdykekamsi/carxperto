@@ -1,16 +1,40 @@
 const express = require("express");
+const errorHandler = require("./middlewares/errorHandler");
+const Router = require("./routes");
+const _db = require("./config/dbConnection");
+require("dotenv").config();
+const cors = require("cors"); 
+const path = require("path");
+
+const swaggerUi = require("swagger-ui-express");
+const YAML = require("yamljs");
+const swaggerJsDocs = YAML.load('./utils/swagger.yaml');
+
 
 const app = express();
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3000;
 
+app.use(cors({
+  origin: "*",
+  methods: 'GET,HEAD,PUT,POST,DELETE',
+  credentials: true,
+}));
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use("/api/v1",Router);
+app.use(errorHandler);
 
-app.get("health_check", (req,res) => {
-    res.status(200).json({
-        status: "OK"
-    });
+app.use("/api/docs",swaggerUi.serve,swaggerUi.setup(swaggerJsDocs));
+
+app.use((req,res) => {
+  return res.status(404).json({
+    status: false,
+    message: "route not found"
+  });
 })
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+_db().then(()=>{
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
 });

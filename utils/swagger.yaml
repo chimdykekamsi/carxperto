@@ -1,0 +1,122 @@
+openapi: 3.0.3
+info: 
+  title: TrendsTalk Blog API
+  description: TrendsTalk Blog API offers a suite of powerful features designed to streamline your blogging experience. From user registration to post creation and exploration, our API provides robust functionality to cater to your blogging needs.
+  version: 1.0.0
+  contact:
+    email: ckamsi04@gmail.com
+servers:
+  - url: http://localhost:3000/api/v1
+
+schemes: [http]
+
+tags:
+  - name: auth
+    description: All endpoints responsible for user authorization
+
+paths:
+  /auth/register:
+    post:
+      tags:
+        - auth
+      summary: Provide basic information for user registration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: 
+              type: object
+              required:
+                - email
+                - password
+                - username
+              properties:
+                username:
+                  type: string
+                  description: A unique username for authentication
+                password:
+                  type: string
+                  description: A secure password for authentication
+                email:
+                  type: string
+                  description: A unique email for authentication
+      responses:
+        '201':
+          description: Success
+        '400':
+          description: Bad request
+        '500':
+          description: Internal Server Error
+  
+  /auth/login:
+    post:
+      tags:
+        - auth
+      summary: Provide basic information for user login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: 
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                password:
+                  type: string
+                  description: A secure password for authentication
+                email:
+                  type: string
+                  description: A unique email for authentication
+      responses:
+        '201':
+          description: Success
+        '400':
+          description: Bad request
+        '500':
+          description: Internal Server Error
+  
+  /auth/get_current_user:
+    get:
+      tags:
+        - auth
+      summary: This route authenticates the user token and responds with the verified user's data
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad request
+        '500':
+          description: Internal Server Error
+      security:
+        - BearerAuth: []
+
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        username:
+          type: string
+          description: A unique username for authentication
+        password:
+          type: string
+          description: A secure password for authentication
+        email:
+          type: string
+          description: A unique email for authentication
+        role:
+          type: string
+          description: Specifies the role of the user
+  
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      name: BearerAuth
+      in: header
