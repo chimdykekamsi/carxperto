@@ -16,7 +16,8 @@ const registerSeller = asyncHandler(async (req, res) => {
         street,
         zipCode,
         country,
-        other
+        other,
+        phone
     } = req.body;
     const validateUser = await User.findById(user.id);
     if(! validateUser){
@@ -38,7 +39,8 @@ const registerSeller = asyncHandler(async (req, res) => {
             street,
             zipCode,
             country,
-            other
+            other,
+            phone
         }
     });
 

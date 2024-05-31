@@ -65,7 +65,7 @@ const createCar = asyncHandler(async (req, res) => {
         discountType,
         image: req.body.image.url,
         sellerId: seller._id,
-        status: "pending"
+        status: "draft"
     });
     
     if(!car){
@@ -78,7 +78,7 @@ const createCar = asyncHandler(async (req, res) => {
     await seller.save();
     return res.status(201).json({
         success: true,
-        message: "Your car will be listed shortly pending approval by admin",
+        message: "Your car has been listed succesfully",
         car,
         seller
     })

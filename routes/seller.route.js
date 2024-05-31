@@ -6,7 +6,7 @@ const checkAccountType = require("../middlewares/checkAccountType");
 
 const sellerRoute = express.Router();
 
-sellerRoute.post("/register", validateToken, checkAccountType(["dormant"]), checkForMissingFields(["storeName","state","town","country"]), registerSeller);
+sellerRoute.post("/register", validateToken, checkAccountType(["dormant"]), checkForMissingFields(["storeName","state","town","country","phone"]), registerSeller);
 sellerRoute.post("/verify", validateToken, checkAccountType(["admin"]), checkForMissingFields(["sellerId"]), verifySeller);
 
 module.exports = sellerRoute;
