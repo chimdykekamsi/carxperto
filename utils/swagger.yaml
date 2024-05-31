@@ -30,6 +30,7 @@ paths:
                 - email
                 - password
                 - username
+                - fullname
               properties:
                 username:
                   type: string
@@ -40,6 +41,9 @@ paths:
                 email:
                   type: string
                   description: A unique email for authentication
+                fullname:
+                  type: string
+                  description: First and Lastname of the user
       responses:
         '201':
           description: Success
@@ -109,9 +113,12 @@ components:
         email:
           type: string
           description: A unique email for authentication
-        role:
+        account_type:
           type: string
-          description: Specifies the role of the user
+          description: Specifies the type of user
+        fullname:
+          type: string
+          description: First and lastname of the user seperated by a space
   
   securitySchemes:
     BearerAuth:
