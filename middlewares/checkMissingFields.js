@@ -1,12 +1,7 @@
 function checkForMissingFields(requiredFields) {
     return (req, res, next) => {
-        const missingFields = [];
-        requiredFields.forEach(field => {
-            // Check if the field is missing or empty
-            if (!req.body.hasOwnProperty(field) || req.body[field] === null || req.body[field] === undefined || req.body[field] === '') {
-                missingFields.push(field);
-            }
-        });
+        const bodyKeys = Object.keys(req.body);
+        const missingFields = requiredFields.filter(field => !bodyKeys.includes(field));
 
         if (missingFields.length > 0) {
             return res.status(400).json({

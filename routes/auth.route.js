@@ -4,10 +4,10 @@ const validateToken = require("../middlewares/validateTokenHandler");
 const checkForMissingFields = require("../middlewares/checkMissingFields");
 
 
-const authRouter = express.Router();
+const authRoute = express.Router();
 
-authRouter.post("/register",checkForMissingFields(["username", "email", "password", "fullname"]),registerUser);
-authRouter.post("/login",loginUser);
-authRouter.get("/get_current_user",validateToken,currentUser);
+authRoute.post("/register",checkForMissingFields(["username", "email", "password", "fullname"]),registerUser);
+authRoute.post("/login",loginUser);
+authRoute.get("/get_current_user",validateToken,currentUser);
 
-module.exports = authRouter;
+module.exports = authRoute;
