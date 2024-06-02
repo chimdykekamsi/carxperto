@@ -38,7 +38,7 @@ const createCar = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error("Seller is not verified");
     }
-    if(!req.body.image.url){
+    if(!req.body.image){
         res.status(400);
         throw new Error("Image not found");
     }
@@ -148,7 +148,6 @@ const deleteCar = asyncHandler(async(req,res) => {
 const updateCar = asyncHandler(async (req, res) => {
     const { carId } = req.params;
     const { id } = req.user;
-    console.log(req.body);
 
     const user = await User.findById(id);
     const seller = await Seller.findOne({ userId: user._id });
@@ -195,7 +194,9 @@ const updateCar = asyncHandler(async (req, res) => {
 
     if (req.body.image) {
         await deleteImagesFromCloudinary(car.image);
-        updatedFields.image = req.body.image;
+        updatedFields.image = req.body.image.secure_url;
+    }else{
+        updatedFields.image = car.image;
     }
 
     Object.assign(car, updatedFields);

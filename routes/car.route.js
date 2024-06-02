@@ -14,15 +14,16 @@ const carRoute = express.Router();
 carRoute.route("/")
     .post(
         validateToken,
+        upload.single('image'), 
         checkAccountType(["seller"]),
         checkForMissingFields([
             "name", "model", "category", "sellingPrice", "costPrice", "condition",
             "shortDescription", "longDescription", "year", "color", "mileage", "make", "quantity"
         ]),
-        upload.single('image'),
         uploadImagesToCloudinary,
         createCar
     );
+
 
 carRoute.route("/:carId/:action")
     .post(
@@ -41,12 +42,10 @@ carRoute.route("/:carId")
         validateToken,
         checkAccountType(["seller"]),
         upload.single('image'),
-        async (req, res, next) => {
+        async(req, res, next) => {
             if (req.file) {
-                await uploadImagesToCloudinary(req, res, next);
-            } else {
-                next();
-            }
+                await uploadImagesToCloudinary(req,res,next);
+            } 
         },
         updateCar
     );

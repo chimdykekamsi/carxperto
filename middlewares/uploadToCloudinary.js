@@ -12,24 +12,24 @@ cloudinary.config({
 const uploadImagesToCloudinary = async (req, res, next) => {
     try {
         const image = req.file; 
-        if(!image){
-            console.log("Image not found");
-            next();
-        }
-        const result = await cloudinary.uploader.upload(image.path, {folder: "carxperto"})
+        
+        if(image){
+            const result = await cloudinary.uploader.upload(image.path, {folder: "carxperto"})
             .catch(err => {
                 const filePath = image.path;
                 fs.unlinkSync(filePath);
             });
-        result.url = result.secure_url
-        
+            result.url = result.secure_url
+            
 
-        req.body.image = result;
-        const filePath = image.path;
-        fs.unlinkSync(filePath);
-        next();
-
-    
+            req.body.image = result;
+            const filePath = image.path;
+            fs.unlinkSync(filePath);
+            next();
+        }else{
+            console.log("Image not found");
+            next();
+        }
 
     } catch (error) {
         const statusCode = res.statusCode ? res.statusCode : 500;
