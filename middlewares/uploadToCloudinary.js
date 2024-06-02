@@ -13,10 +13,14 @@ const uploadImagesToCloudinary = async (req, res, next) => {
     try {
         const image = req.file; 
         if(!image){
-            res.status(400);
-            throw new Error("Image not found");
+            console.log("Image not found");
+            next();
         }
-        const result = await cloudinary.uploader.upload(image.path, {folder: "carxperto"});
+        const result = await cloudinary.uploader.upload(image.path, {folder: "carxperto"})
+            .catch(err => {
+                const filePath = image.path;
+                fs.unlinkSync(filePath);
+            });
         result.url = result.secure_url
         
 
@@ -37,27 +41,25 @@ const uploadImagesToCloudinary = async (req, res, next) => {
     }
 };
 
-const deleteImagesFromCloudinary =  (images) => {
-    const assets = images.map((image) => {
-        // Ensure the image and its URL are defined
-        if (image && image.url) {
-            // Extract the public ID from the URL
-            const url = new URL(image.url);
-            const pathSegments = url.pathname.split('/'); 
-            const publicID = pathSegments.slice(5).join('/').replace(/\.\w+$/, '');
-            return publicID;
-        } else {
-            console.log("Null image or missing URL.");
-            return null;
-        }
-    });
+const deleteImagesFromCloudinary =  (image) => {
+    let asset;
+    if (image) {
+        // Extract the public ID from the URL
+        const url = new URL(image);
+        const pathSegments = url.pathname.split('/'); 
+        const publicID = pathSegments.slice(5).join('/').replace(/\.\w+$/, '');
+        asset = publicID;
+    } else {
+        console.log("Null image or missing URL.");
+        return null;
+    }
     cloudinary.api
-    .delete_resources(assets)
+    .delete_resources(asset)
     .then(result=>{
         return result;
     })
     .catch(err =>{
-        throw new Error("Post images failed to delete");
+        throw new Error("image failed to delete");
     })
 };
 

@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info: 
-  title: TrendsTalk Blog API
-  description: TrendsTalk Blog API offers a suite of powerful features designed to streamline your blogging experience. From user registration to post creation and exploration, our API provides robust functionality to cater to your blogging needs.
+  title: CarXperto
+  description: API for CarXperto application
   version: 1.0.0
   contact:
     email: ckamsi04@gmail.com
@@ -17,7 +17,6 @@ tags:
   - name: car
 
 paths:
-  # Auth routes
   /auth/register:
     post:
       tags:
@@ -28,25 +27,7 @@ paths:
         content:
           application/json:
             schema: 
-              type: object
-              required:
-                - email
-                - password
-                - username
-                - fullname
-              properties:
-                username:
-                  type: string
-                  description: A unique username for authentication
-                password:
-                  type: string
-                  description: A secure password for authentication
-                email:
-                  type: string
-                  description: A unique email for authentication
-                fullname:
-                  type: string
-                  description: First and Lastname of the user
+              $ref: '#/components/schemas/User'
       responses:
         '201':
           description: Success
@@ -69,19 +50,19 @@ paths:
                 - email
                 - password
               properties:
-                password:
-                  type: string
-                  description: A secure password for authentication
                 email:
                   type: string
                   description: A unique email for authentication
+                password:
+                  type: string
+                  description: A secure password for authentication
       responses:
         '201':
           description: Success
         '400':
           description: Bad request
         '500':
-          description: Internal Server Error  
+          description: Internal Server Error
   /auth/get_current_user:
     get:
       tags:
@@ -97,12 +78,11 @@ paths:
       security:
         - BearerAuth: []
 
-  # Sellers route
   /sellers/register:
     post:
       tags:
         - seller
-      summary: Onboards a user as a seller on the plartform
+      summary: Onboards a user as a seller on the platform
       requestBody:
         required: true
         content:
@@ -148,8 +128,7 @@ paths:
           description: Internal Server Error
       security:
         - BearerAuth: []
-
-  # cars route
+  
   /cars:
     post:
       tags:
@@ -160,9 +139,133 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Car' # Reference to the Car schema
+              type: object
+              properties:
+                name:
+                  type: string
+                model:
+                  type: string
+                category:
+                  type: string
+                sellingPrice:
+                  type: number
+                costPrice:
+                  type: number
+                condition:
+                  type: string
+                shortDescription:
+                  type: string
+                longDescription:
+                  type: string
+                year:
+                  type: string
+                color:
+                  type: string
+                mileage:
+                  type: string
+                make:
+                  type: string
+                quantity:
+                  type: number
+                discount:
+                  type: number
+                discountType:
+                  type: string
+                status:
+                  type: string
+                image:
+                  type: string
+                  format: binary
       responses:
         '201':
+          description: Success
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+      security:
+        - BearerAuth: []
+  /cars/{carId}:
+    put:
+      tags:
+        - car
+      summary: Update a car's details (Sellers only)
+      parameters:
+        - name: carId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the car to update
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Car'
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+      security:
+        - BearerAuth: []
+
+    delete:
+      tags:
+        - car
+      summary: Delete a car (Sellers only)
+      parameters:
+        - name: carId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the car to delete
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+      security:
+        - BearerAuth: []
+  /cars/{carId}/{action}:
+    post:
+      tags:
+        - car
+      summary: Perform an action on a car (Sellers only)
+      parameters:
+        - name: carId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the car
+        - name: action
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [draft, publish]
+          description: The action to perform on the car (draft or publish)
+      responses:
+        '200':
           description: Success
         '400':
           description: Bad request
@@ -182,6 +285,8 @@ components:
       required:
         - email
         - password
+        - username
+        - fullname
       properties:
         username:
           type: string
@@ -192,12 +297,12 @@ components:
         email:
           type: string
           description: A unique email for authentication
+        fullname:
+          type: string
+          description: First and lastname of the user separated by a space
         account_type:
           type: string
           description: Specifies the type of user
-        fullname:
-          type: string
-          description: First and lastname of the user seperated by a space
     Seller:
       type: object
       required:
@@ -210,16 +315,16 @@ components:
       properties:
         storeName:
           type: string
-          description: A unique name for sellers store 
+          description: A unique name for the seller's store
         state:
           type: string
-          description: State your store could be found
+          description: State where the store is located
         town:
           type: string
-          description: Town
+          description: Town where the store is located
         street:
           type: string
-          description: Street
+          description: Street where the store is located
         country:
           type: string
           description: Country of operation
@@ -251,57 +356,33 @@ components:
       properties:
         name:
           type: string
-          description: The name of the car
         model:
           type: string
-          description: The model of the car
         category:
           type: string
-          description: The category of the car
         sellingPrice:
           type: number
-          description: The selling price of the car
         costPrice:
           type: number
-          description: The cost price of the car
         condition:
           type: string
-          description: The condition of the car
         shortDescription:
           type: string
-          description: A short description of the car
         longDescription:
           type: string
-          description: A long description of the car
         year:
           type: string
-          description: The year of the car
         color:
           type: string
-          description: The color of the car
         mileage:
-          type: string
-          description: The mileage of the car
+          type: number
         make:
           type: string
-          description: The make of the car
         quantity:
-          type: integer
-          description: The quantity of the car available
+          type: number
         discount:
           type: number
-          description: The discount on the car (optional)
         discountType:
           type: string
-          description: The type of discount (optional)
         image:
           type: string
-          description: The image of the car
-
-  securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-      name: BearerAuth
-      in: header

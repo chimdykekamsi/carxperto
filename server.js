@@ -13,11 +13,7 @@ const swaggerJsDocs = YAML.load('./utils/swagger.yaml');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors({
-  origin: "*",
-  methods: 'GET,HEAD,PUT,POST,DELETE',
-  credentials: true,
-}));
+app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
